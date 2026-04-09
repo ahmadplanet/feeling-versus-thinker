@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thinking vs Feeling • Double-Sided Dichotomy Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        body { font-family: 'Inter', system_ui, sans-serif; }
+        input[type="range"] { 
+            accent-color: #a5b4fc; 
+            height: 14px; 
+            border-radius: 9999px; 
+        }
+        .question-card {
+            background-color: #1e2937;
+            color: white;
+        }
+        .left-label { color: #60a5fa; }
+        .right-label { color: #f472b6; }
+    </style>
+</head>
+<body class="bg-slate-950 text-white min-h-screen">
+
+<div class="max-w-4xl mx-auto p-8">
+
+    <div class="text-center mb-12">
+        <h1 class="text-5xl font-bold">Thinking vs Feeling Test</h1>
+        <p class="mt-4 text-xl text-slate-300">40 questions • Double-sided slider (50 = balanced)</p>
+        <p class="text-sm text-slate-400 mt-6">
+            Slide <span class="text-blue-400 font-medium">LEFT</span> for Thinking style • 
+            Slide <span class="text-pink-400 font-medium">RIGHT</span> for Feeling style
+        </p>
+    </div>
+
+    <div id="questions-container" class="space-y-14"></div>
+
+    <div class="flex justify-center mt-20">
+        <button onclick="submitTest()" 
+                class="px-20 py-8 bg-gradient-to-r from-indigo-500 to-violet-500 text-white font-semibold text-3xl rounded-3xl shadow-2xl transition-all">
+            Finish Test • See Your Core Decision Style
+        </button>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="results-screen" class="hidden">
+        <div class="bg-slate-900 rounded-3xl shadow-2xl p-14">
+
+            <div class="text-center mb-12">
+                <h2 class="text-5xl font-bold text-white">Your Core Decision-Making Style</h2>
+                <div id="result-type" class="text-7xl font-black mt-8 text-indigo-400"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div class="text-center">
+                    <div class="text-2xl font-semibold mb-4 text-blue-400">Thinking Strength</div>
+                    <div id="thinking-perc" class="text-8xl font-black text-blue-400">50</div>
+                    <div class="h-6 bg-slate-700 rounded-full mt-6 overflow-hidden">
+                        <div id="thinking-bar" class="h-full bg-gradient-to-r from-blue-400 to-indigo-400" style="width: 50%"></div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-semibold mb-4 text-pink-400">Feeling Strength</div>
+                    <div id="feeling-perc" class="text-8xl font-black text-pink-400">50</div>
+                    <div class="h-6 bg-slate-700 rounded-full mt-6 overflow-hidden">
+                        <div id="feeling-bar" class="h-full bg-gradient-to-r from-pink-400 to-rose-400" style="width: 50%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="explanation" class="mt-12 text-xl leading-relaxed text-center text-slate-200"></div>
+
+            <div class="flex justify-center gap-6 mt-16">
+                <button onclick="copyResults()" class="px-12 py-6 bg-slate-800 rounded-3xl font-medium text-xl text-white">📋 Copy Results</button>
+                <button onclick="saveAsImage()" class="px-12 py-6 bg-indigo-600 text-white rounded-3xl font-medium text-xl">📸 Save Image</button>
+            </div>
+
+            <div class="text-center mt-12">
+                <button onclick="restartTest()" class="underline text-slate-400">Retake Test</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// 40 clear dichotomy questions (20 Thinking, 20 Feeling)
+const questions = [
+    {left: "I decide based on logic, facts, and objective principles.", right: "I decide based on personal values, empathy, and how it affects people.", thinking: true},
+    {left: "Fairness means applying the same rules to everyone.", right: "Fairness means considering each person's unique situation and feelings.", thinking: true},
+    {left: "I separate emotions from facts when deciding.", right: "I consider how people will feel about the decision.", thinking: true},
+    {left: "I prefer direct, honest feedback even if it hurts.", right: "I prefer tactful, kind feedback to avoid hurting feelings.", thinking: true},
+    {left: "I choose the option that makes the most logical sense.", right: "I choose the option that feels morally right.", thinking: true},
+    {left: "I focus on what is true and effective.", right: "I focus on what preserves harmony and relationships.", thinking: true},
+    {left: "I am comfortable making tough calls that disappoint some people.", right: "I try to find solutions where everyone feels good.", thinking: true},
+    {left: "I analyze pros and cons systematically.", right: "I weigh how the decision impacts people's emotions.", thinking: true},
+    {left: "I value competence and results more than warmth.", right: "I value kindness and understanding more than strict efficiency.", thinking: true},
+    {left: "I remain objective even when emotions are high.", right: "I naturally consider emotional consequences first.", thinking: true},
+    {left: "I prioritize truth and accuracy over feelings.", right: "I prioritize compassion over strict accuracy.", thinking: true},
+    {left: "I base conclusions on observable evidence.", right: "I base conclusions on personal values and intuition.", thinking: true},
+    {left: "I am more comfortable with objective standards.", right: "I am more comfortable with subjective feelings.", thinking: true},
+    {left: "The most ethical choice follows consistent logic.", right: "The most ethical choice considers people's feelings.", thinking: true},
+    {left: "I dislike bending rules to avoid hurting feelings.", right: "I am willing to bend rules to protect feelings.", thinking: true},
+    {left: "I can decide without needing everyone to feel good.", right: "I feel responsible for how others feel about my decision.", thinking: true},
+    {left: "I focus on what is fair and consistent.", right: "I focus on what feels kind and compassionate.", thinking: true},
+    {left: "Emotions should not override clear logic.", right: "Logic should not override human feelings.", thinking: true},
+    {left: "I prefer decisions defensible with facts.", right: "I prefer decisions that feel morally right.", thinking: true},
+    {left: "I can criticize an idea without worrying about feelings.", right: "I am careful not to hurt feelings when criticizing.", thinking: true},
+
+    // Feeling side
+    {left: "I prioritize what is logically correct.", right: "I prioritize what preserves good relationships.", thinking: false},
+    {left: "Rules should be followed strictly.", right: "Rules should sometimes be bent for human needs.", thinking: false},
+    {left: "I focus on objective fairness.", right: "I focus on emotional fairness and compassion.", thinking: false},
+    {left: "I prefer blunt honesty.", right: "I prefer gentle tactfulness.", thinking: false},
+    {left: "I choose based on effectiveness.", right: "I choose based on how it affects people's well-being.", thinking: false},
+    {left: "I remain detached from emotions when deciding.", right: "I naturally consider emotional impact first.", thinking: false},
+    {left: "I value strict consistency.", right: "I value kindness and understanding.", thinking: false},
+    {left: "I analyze with cold logic.", right: "I analyze with empathy and values.", thinking: false},
+    {left: "I can make unpopular but logical decisions.", right: "I try to avoid decisions that hurt people.", thinking: false},
+    {left: "I focus on principles.", right: "I focus on people.", thinking: false},
+    {left: "I believe rules matter more than feelings.", right: "I believe people's feelings matter more than rules.", thinking: false},
+    {left: "I decide with my head.", right: "I decide with my heart.", thinking: false},
+    {left: "Logic comes first.", right: "Empathy comes first.", thinking: false},
+    {left: "I value justice as fairness.", right: "I value justice as compassion.", thinking: false},
+    {left: "I can be tough when needed.", right: "I try to be kind whenever possible.", thinking: false},
+    {left: "I focus on what is right.", right: "I focus on what is good for people.", thinking: false},
+    {left: "I prefer clear boundaries.", right: "I prefer understanding and flexibility.", thinking: false},
+    {left: "I trust objective data.", right: "I trust personal values and feelings.", thinking: false},
+    {left: "I am guided by reason.", right: "I am guided by my conscience.", thinking: false},
+    {left: "I can say no when logic demands it.", right: "I find it hard to say no if it hurts someone.", thinking: false}
+];
+
+let userAnswers = new Array(40).fill(50);
+
+function renderQuestions() {
+    const container = document.getElementById('questions-container');
+    let html = '';
+
+    questions.forEach((q, i) => {
+        const id = `q${i}`;
+        html += `
+            <div class="question-card rounded-3xl p-10">
+                <div class="flex justify-between items-center mb-8">
+                    <div class="left-label font-medium text-right flex-1 pr-6">${q.left}</div>
+                    <div class="right-label font-medium text-left flex-1 pl-6">${q.right}</div>
+                </div>
+                
+                <div class="slider-container flex items-center gap-4">
+                    <span class="text-blue-400 font-medium w-14 text-right">Thinking</span>
+                    <input type="range" id="${id}" min="0" max="100" value="50" 
+                           oninput="updateValue(this, ${i})" class="flex-1">
+                    <span class="text-pink-400 font-medium w-14">Feeling</span>
+                </div>
+                
+                <div class="text-center mt-6">
+                    <span id="${id}-val" class="value-display text-white">50%</span>
+                </div>
+            </div>`;
+    });
+
+    container.innerHTML = html;
+}
+
+function updateValue(slider, index) {
+    let val = parseInt(slider.value);
+    let displayVal = Math.abs(val - 50) * 2;   // 0 at center → 100 at either end
+    document.getElementById(slider.id + '-val').textContent = displayVal + '%';
+    userAnswers[index] = val;
+}
+
+function submitTest() {
+    document.getElementById('questions-container').classList.add('hidden');
+    document.querySelector('button[onclick="submitTest()"]').classList.add('hidden');
+    document.getElementById('results-screen').classList.remove('hidden');
+    showResults();
+}
+
+function calculateScores() {
+    let thinkingScore = 0;
+
+    questions.forEach((q, i) => {
+        const val = userAnswers[i];
+        const strength = Math.abs(val - 50) * 2;
+
+        if (q.thinking) {
+            if (val <= 50) thinkingScore += strength;   // left = Thinking
+        } else {
+            if (val >= 50) thinkingScore += strength;   // right = Feeling
+        }
+    });
+
+    const thinkingPercent = Math.round(thinkingScore / 40);
+    const feelingPercent = 100 - thinkingPercent;
+
+    let type = "";
+    let explanation = "";
+
+    if (thinkingPercent >= 75) {
+        type = "Strong Thinker";
+        explanation = "You primarily come to conclusions using objective logic, facts, principles, and fairness. You focus on what is correct and effective.";
+    } else if (thinkingPercent >= 60) {
+        type = "Moderate Thinker";
+        explanation = "You lean toward logical, principle-based decision making but still consider emotional impact.";
+    } else if (feelingPercent >= 75) {
+        type = "Strong Feeler";
+        explanation = "You primarily come to conclusions based on personal values, empathy, and how decisions affect people. You prioritize harmony and what feels right.";
+    } else if (feelingPercent >= 60) {
+        type = "Moderate Feeler";
+        explanation = "You lean toward value-based and empathetic decision making but can apply logic when needed.";
+    } else {
+        type = "Balanced";
+        explanation = "You show a balanced approach between logic and values when making decisions.";
+    }
+
+    return { thinkingPercent, feelingPercent, type, explanation };
+}
+
+function showResults() {
+    const result = calculateScores();
+
+    document.getElementById('result-type').innerHTML = `<span class="text-indigo-400">${result.type}</span>`;
+    document.getElementById('thinking-perc').textContent = result.thinkingPercent;
+    document.getElementById('feeling-perc').textContent = result.feelingPercent;
+    document.getElementById('thinking-bar').style.width = result.thinkingPercent + '%';
+    document.getElementById('feeling-bar').style.width = result.feelingPercent + '%';
+    document.getElementById('explanation').innerHTML = `<p class="text-xl">${result.explanation}</p>`;
+}
+
+function copyResults() {
+    const result = calculateScores();
+    const text = `Thinking vs Feeling Test Results\n\n` +
+                 `Core Style: ${result.type}\n` +
+                 `Thinking Strength: ${result.thinkingPercent}%\n` +
+                 `Feeling Strength: ${result.feelingPercent}%\n\n` +
+                 `${result.explanation}`;
+    navigator.clipboard.writeText(text).then(() => alert("Results copied!"));
+}
+
+function saveAsImage() {
+    const resultsDiv = document.getElementById('results-screen');
+    html2canvas(resultsDiv, {scale: 2}).then(canvas => {
+        const a = document.createElement('a');
+        a.download = 'thinking-vs-feeling-results.png';
+        a.href = canvas.toDataURL();
+        a.click();
+    });
+}
+
+function restartTest() {
+    location.reload();
+}
+
+// Initialize
+renderQuestions();
+</script>
+
+</body>
+</html>
