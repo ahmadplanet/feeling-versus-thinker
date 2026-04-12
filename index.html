@@ -8,10 +8,10 @@
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         body { font-family: 'Inter', system_ui, sans-serif; }
-        input[type="range"] { 
-            accent-color: #a5b4fc; 
-            height: 14px; 
-            border-radius: 9999px; 
+        input[type="range"] {
+            accent-color: #a5b4fc;
+            height: 14px;
+            border-radius: 9999px;
         }
         .question-card {
             background-color: #1e2937;
@@ -19,6 +19,10 @@
         }
         .left-label { color: #60a5fa; }
         .right-label { color: #f472b6; }
+        .value-display {
+            font-size: 2.25rem;
+            font-weight: 800;
+        }
     </style>
 </head>
 <body class="bg-slate-950 text-white min-h-screen">
@@ -29,7 +33,7 @@
         <h1 class="text-5xl font-bold">Thinking vs Feeling Test</h1>
         <p class="mt-4 text-xl text-slate-300">40 questions • Double-sided slider (50 = balanced)</p>
         <p class="text-sm text-slate-400 mt-6">
-            Slide <span class="text-blue-400 font-medium">LEFT</span> for Thinking style • 
+            Slide <span class="text-blue-400 font-medium">LEFT</span> for Thinking style •
             Slide <span class="text-pink-400 font-medium">RIGHT</span> for Feeling style
         </p>
     </div>
@@ -180,12 +184,14 @@ function calculateScores() {
 
     questions.forEach((q, i) => {
         const val = userAnswers[i];
-        const strength = Math.abs(val - 50) * 2;
+        const strength = Math.abs(val - 50) * 2;   // 0-100 strength
 
         if (q.thinking) {
-            if (val <= 50) thinkingScore += strength;   // left = Thinking
+            // Left side (Thinking) = lower values
+            if (val <= 50) thinkingScore += strength;
         } else {
-            if (val >= 50) thinkingScore += strength;   // right = Feeling
+            // Right side (Feeling) = higher values
+            if (val >= 50) thinkingScore += strength;
         }
     });
 
