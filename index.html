@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thinking vs Feeling Test • 30 Questions</title>
+    <title>Feeling vs Thinking Test • 40 Questions</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
@@ -25,8 +25,8 @@
     <!-- START SCREEN -->
     <div id="start-screen">
         <div class="text-center mb-12">
-            <h1 class="text-5xl font-bold">Thinking vs Feeling Test</h1>
-            <p class="mt-4 text-xl text-slate-300">30 Questions • MBTI Style</p>
+            <h1 class="text-5xl font-bold">Feeling vs Thinking Test</h1>
+            <p class="mt-4 text-xl text-slate-300">40 Questions • MBTI Style</p>
             <p class="text-sm text-slate-400 mt-6">
                 <span class="text-emerald-400">0</span> = Does not describe me at all • 
                 <span class="text-violet-400">100</span> = Describes me perfectly
@@ -48,7 +48,7 @@
             <div class="text-lg leading-relaxed text-slate-200 space-y-6">
                 <p>Please answer based on how you <strong>typically</strong> make decisions and interact with others in everyday life.</p>
                 <p class="text-amber-400 font-medium">
-                    Focus on your natural patterns - not rare exceptions or how you think you "should" be.
+                    Focus on your natural patterns - not rare exceptions or how you think you should answer.
                 </p>
             </div>
 
@@ -80,11 +80,11 @@
     <!-- RESULTS SCREEN -->
     <div id="results-screen" class="hidden">
         <div class="bg-slate-900 rounded-3xl shadow-2xl p-14 text-center">
-            <h2 class="text-5xl font-bold mb-8">Your Thinking vs Feeling Result</h2>
+            <h2 class="text-5xl font-bold mb-8">Your Feeling vs Thinking Result</h2>
             
             <div class="flex justify-center gap-16 my-12">
                 <div>
-                    <div class="text-sky-400 text-2xl font-medium">THINKING</div>
+                    <div class="text-emerald-400 text-2xl font-medium">THINKING</div>
                     <div id="thinking-score" class="text-7xl font-black mt-2">50%</div>
                 </div>
                 <div class="text-6xl text-slate-500 self-center">VS</div>
@@ -113,38 +113,51 @@
 </div>
 
 <script>
-// 30 Questions - Thinking vs Feeling
+// 40 Questions - 20 Thinking + 20 Feeling (clear & accurate)
 const questions = [
-    {text: "I make decisions based primarily on logic and objective facts.", feeling: 0},
-    {text: "I prioritize harmony and how others will feel about my decisions.", feeling: 100},
-    {text: "I value fairness and justice more than mercy and compassion.", feeling: 0},
-    {text: "I often consider people's emotions when making choices.", feeling: 100},
-    {text: "I can stay detached and objective during conflicts.", feeling: 0},
-    {text: "I find it important to express care and empathy openly.", feeling: 100},
-    {text: "I focus on what is true rather than what feels right.", feeling: 0},
-    {text: "I tend to please others even if it means bending rules.", feeling: 100},
-    {text: "I analyze situations critically before deciding.", feeling: 0},
-    {text: "I am sensitive to other people's needs and feelings.", feeling: 100},
-    {text: "I believe honesty is more important than sparing feelings.", feeling: 0},
-    {text: "I avoid hurting others' feelings whenever possible.", feeling: 100},
-    {text: "I prefer clear, direct communication even if it's blunt.", feeling: 0},
-    {text: "I naturally notice when someone is upset or uncomfortable.", feeling: 100},
-    {text: "I make decisions with my head rather than my heart.", feeling: 0},
-    {text: "I value relationships and emotional connection highly.", feeling: 100},
-    {text: "I can easily see flaws in arguments and ideas.", feeling: 0},
-    {text: "I often put myself in other people's shoes.", feeling: 100},
-    {text: "I prioritize efficiency and results over feelings.", feeling: 0},
-    {text: "I feel bad if I have to deliver tough feedback.", feeling: 100},
-    {text: "I remain calm and logical under emotional pressure.", feeling: 0},
-    {text: "I enjoy helping and supporting others emotionally.", feeling: 100},
-    {text: "I value principles and consistency more than exceptions.", feeling: 0},
-    {text: "I am warm, supportive, and encouraging toward others.", feeling: 100},
-    {text: "I focus on cause and effect rather than personal impact.", feeling: 0},
-    {text: "I tend to agree with others to maintain group harmony.", feeling: 100},
-    {text: "I enjoy intellectual debates and logical discussions.", feeling: 0},
+    // Thinking-oriented (Low Feeling score)
+    {text: "I make decisions based on logic, facts, and objective analysis.", feeling: 0},
+    {text: "I prioritize truth and accuracy over people's feelings.", feeling: 0},
+    {text: "I can deliver criticism directly if it improves the outcome.", feeling: 0},
+    {text: "I focus on what is fair and consistent rather than what feels kind.", feeling: 0},
+    {text: "I separate my emotions from work and decision-making.", feeling: 0},
+    {text: "I believe rules should apply equally with no exceptions.", feeling: 0},
+    {text: "I value efficiency and results more than group harmony.", feeling: 0},
+    {text: "I stay calm and logical even when others are emotional.", feeling: 0},
+    {text: "I prefer direct communication, even if it's blunt.", feeling: 0},
+    {text: "I trust data and evidence over personal stories.", feeling: 0},
+    {text: "I can make tough decisions without worrying too much about feelings.", feeling: 0},
+    {text: "I focus on solving the problem rather than comforting people.", feeling: 0},
+    {text: "I believe honesty is always better than sparing someone's feelings.", feeling: 0},
+    {text: "I evaluate ideas based on how logical they are.", feeling: 0},
+    {text: "I am comfortable with conflict when it's necessary for the right result.", feeling: 0},
+    {text: "I prioritize justice over mercy in most situations.", feeling: 0},
+    {text: "I analyze pros and cons before considering emotional impact.", feeling: 0},
+    {text: "I don't let emotions cloud my judgment.", feeling: 0},
+    {text: "I prefer clear principles over personal exceptions.", feeling: 0},
+    {text: "I can give bad news straightforwardly without softening it too much.", feeling: 0},
+
+    // Feeling-oriented (High Feeling score)
+    {text: "I consider how my decisions will affect the emotions of others.", feeling: 100},
+    {text: "I try to maintain harmony and avoid hurting people's feelings.", feeling: 100},
+    {text: "I make choices based on what feels morally right to me.", feeling: 100},
+    {text: "I naturally notice when someone is upset or excluded.", feeling: 100},
+    {text: "I often put other people's needs before my own.", feeling: 100},
+    {text: "I value kindness and empathy more than strict logic.", feeling: 100},
+    {text: "I adjust my behavior to make others feel comfortable.", feeling: 100},
+    {text: "I feel bad when I have to disappoint or say no to someone.", feeling: 100},
+    {text: "I prioritize relationships and emotional connection.", feeling: 100},
     {text: "I am deeply affected by the emotions of people around me.", feeling: 100},
-    {text: "I prefer objective standards over personal values.", feeling: 0},
-    {text: "I make decisions that reflect my personal values and ideals.", feeling: 100}
+    {text: "I try to create a supportive and caring environment.", feeling: 100},
+    {text: "I make decisions with my heart more than my head.", feeling: 100},
+    {text: "I often ask myself how others will feel before deciding.", feeling: 100},
+    {text: "I prefer mercy and understanding over strict justice.", feeling: 100},
+    {text: "I avoid conflict to protect people's feelings.", feeling: 100},
+    {text: "I value personal stories and emotional experiences.", feeling: 100},
+    {text: "I find it important to express care and appreciation.", feeling: 100},
+    {text: "I tend to forgive easily to preserve relationships.", feeling: 100},
+    {text: "I focus on building emotional trust with others.", feeling: 100},
+    {text: "I choose words carefully so I don't offend anyone.", feeling: 100}
 ];
 
 let userAnswers = new Array(questions.length).fill(50);
@@ -217,15 +230,15 @@ function showResults() {
 
     let description = "";
     if (result.feelingScore >= 70) {
-        description = "You have a strong preference for <strong>Feeling</strong>. You make decisions based on values, empathy, and how they affect people.";
+        description = "You have a strong <strong>Feeling</strong> preference. You make decisions based on values, empathy, and how they impact people. Harmony and relationships are very important to you.";
     } else if (result.feelingScore >= 55) {
-        description = "You lean toward <strong>Feeling</strong>. You value harmony and consider emotional impact, while still using some logic.";
+        description = "You lean toward <strong>Feeling</strong>. You balance logic with empathy and often consider emotional impact when making decisions.";
     } else if (result.feelingScore >= 45) {
-        description = "You are fairly balanced between <strong>Thinking</strong> and <strong>Feeling</strong>. You can use both logic and empathy depending on the situation.";
+        description = "You are fairly balanced between <strong>Thinking</strong> and <strong>Feeling</strong>. You can use both objective logic and personal values depending on the situation.";
     } else if (result.feelingScore >= 30) {
-        description = "You lean toward <strong>Thinking</strong> but still consider feelings. You are logical and objective with room for compassion.";
+        description = "You lean toward <strong>Thinking</strong>. You are mostly logical and objective, but you can still consider feelings when necessary.";
     } else {
-        description = "You have a strong preference for <strong>Thinking</strong>. You make decisions based on logic, fairness, and objective analysis.";
+        description = "You have a strong <strong>Thinking</strong> preference. You make decisions based on logic, fairness, and objective truth rather than emotions or personal impact.";
     }
 
     document.getElementById('result-description').innerHTML = description;
@@ -233,14 +246,14 @@ function showResults() {
 
 function copyResults() {
     const r = calculateResult();
-    const text = `Thinking vs Feeling Test Result\n\nThinking: ${r.thinkingScore}%\nFeeling: ${r.feelingScore}%\n`;
+    const text = `Feeling vs Thinking Test Result\n\nThinking: ${r.thinkingScore}%\nFeeling: ${r.feelingScore}%\n`;
     navigator.clipboard.writeText(text).then(() => alert("Results copied!"));
 }
 
 function saveAsImage() {
     html2canvas(document.getElementById('results-screen'), {scale: 2}).then(canvas => {
         const a = document.createElement('a');
-        a.download = 'thinking-vs-feeling-results.png';
+        a.download = 'feeling-vs-thinking-results.png';
         a.href = canvas.toDataURL();
         a.click();
     });
